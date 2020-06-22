@@ -1,4 +1,4 @@
-package com.yzytmac.webrtcandroid
+package com.yzytmac.webrtcandroid.common
 
 /**
  * Created by yzy on 2020-06-17 11:56

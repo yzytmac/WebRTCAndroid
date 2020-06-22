@@ -1,4 +1,4 @@
-package com.yzytmac.webrtcandroid
+package com.yzytmac.webrtcandroid.common
 
 import android.util.Log
 import org.webrtc.SdpObserver

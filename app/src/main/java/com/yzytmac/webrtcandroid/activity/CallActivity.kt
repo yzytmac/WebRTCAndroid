@@ -3,15 +3,12 @@ package com.yzytmac.webrtcandroid.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import com.yzytmac.webrtcandroid.*
-import com.yzytmac.webrtcandroid.model.Message
+import com.yzytmac.webrtcandroid.common.IMManager
 import kotlinx.android.synthetic.main.activity_call.*
-import org.webrtc.IceCandidate
-import org.webrtc.SessionDescription
 
 class CallActivity : AppCompatActivity() {
 

@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.yzytmac.webrtcandroid.App
-import com.yzytmac.webrtcandroid.IMManager
 import com.yzytmac.webrtcandroid.R
 import kotlinx.android.synthetic.main.activity_chat.*
 

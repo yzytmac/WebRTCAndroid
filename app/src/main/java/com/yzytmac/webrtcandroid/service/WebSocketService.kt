@@ -7,7 +7,7 @@ import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 import com.google.gson.Gson
-import com.yzytmac.webrtcandroid.*
+import com.yzytmac.webrtcandroid.common.*
 import com.yzytmac.webrtcandroid.model.Message
 import okhttp3.*
 

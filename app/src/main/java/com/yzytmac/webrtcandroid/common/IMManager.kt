@@ -1,6 +1,7 @@
-package com.yzytmac.webrtcandroid
+package com.yzytmac.webrtcandroid.common
 
 import android.util.Log
+import com.yzytmac.webrtcandroid.App
 import com.yzytmac.webrtcandroid.activity.CallActivity
 import com.yzytmac.webrtcandroid.activity.ChatActivity
 import com.yzytmac.webrtcandroid.model.Message
@@ -22,7 +23,7 @@ object IMManager {
      * 与对方开始互联
      */
     fun init(toUser: String, localVideoView: SurfaceViewRenderer, remoteVideoView: SurfaceViewRenderer) {
-        WebRtcUtils.init(App.context, localVideoView, remoteVideoView) {
+        WebRtcHelper.init(App.context, localVideoView, remoteVideoView) {
             Log.e("yzy", "IMManager->init->第30行:发送candidate")
             webSocket?.send(Message(user, toUser, EVENT_CANDIDATE, iceCandidate = it).toJsonString())
         }
@@ -32,8 +33,8 @@ object IMManager {
      * 当websocket连接
      */
     fun onWebSocketOpen(user: String, webSocket: WebSocket) {
-        this.user = user
-        this.webSocket = webSocket
+        IMManager.user = user
+        IMManager.webSocket = webSocket
         ChatActivity.start(App.context)
     }
 
@@ -84,7 +85,7 @@ object IMManager {
      * 创建offer并发送
      */
     fun offer(toUser: String) {
-        WebRtcUtils.createOffer() {
+        WebRtcHelper.createOffer() {
             Log.e("yzy", "IMManager->offer->第92行:发送offer")
             webSocket?.send(Message(user, toUser, EVENT_OFFER, it).toJsonString())
         }
@@ -95,7 +96,7 @@ object IMManager {
      */
     fun onOffer(message: Message) {
         message.sdp?.let {
-            WebRtcUtils.setRemoteDescription(it)
+            WebRtcHelper.setRemoteDescription(it)
         }
         answer(message.from_user)
     }
@@ -105,7 +106,7 @@ object IMManager {
      */
     fun answer(toUser: String) {
         Log.e("yzy", "IMManager->answer->第106行:")
-        WebRtcUtils.createAnswer {
+        WebRtcHelper.createAnswer {
             Log.e("yzy", "IMManager->answer->第109行:发送answer")
             webSocket?.send(Message(user, toUser, EVENT_ANSWER, it).toJsonString())
         }
@@ -116,7 +117,7 @@ object IMManager {
      */
     fun onAnswer(message: Message) {
         message.sdp?.let {
-            WebRtcUtils.setRemoteDescription(it)
+            WebRtcHelper.setRemoteDescription(it)
         }
     }
 
@@ -125,7 +126,7 @@ object IMManager {
      */
     fun onIceCandidate(message: Message) {
         message.iceCandidate?.let {
-            WebRtcUtils.addIceCandidate(it)
+            WebRtcHelper.addIceCandidate(it)
         }
     }
 

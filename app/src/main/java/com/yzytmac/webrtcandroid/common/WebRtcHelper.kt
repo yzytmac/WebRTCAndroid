@@ -1,4 +1,4 @@
-package com.yzytmac.webrtcandroid
+package com.yzytmac.webrtcandroid.common
 
 import android.content.Context
 import android.util.Log
@@ -11,7 +11,7 @@ import org.webrtc.*
  * QQ: 398564331
  * Description:
  */
-object WebRtcUtils {
+object WebRtcHelper {
     private val streamList = mutableListOf<String>()
     private var peerConnectionFactory: PeerConnectionFactory? = null
     private var peerConnection: PeerConnection? = null
@@ -30,10 +30,10 @@ object WebRtcUtils {
         remoteVideoView: SurfaceViewRenderer,
         onCandidate: (IceCandidate) -> Unit
     ) {
-        this.context = context
-        this.localVideoView = localVideoView
-        this.remoteVideoView = remoteVideoView
-        this.onCandidate = onCandidate
+        WebRtcHelper.context = context
+        WebRtcHelper.localVideoView = localVideoView
+        WebRtcHelper.remoteVideoView = remoteVideoView
+        WebRtcHelper.onCandidate = onCandidate
         createPeerConnection()
         initVideoAudio()
         createSdpObserver()
@@ -63,7 +63,9 @@ object WebRtcUtils {
         val iceServers = mutableListOf<PeerConnection.IceServer>(iceServer)
         val rtcConfiguration = PeerConnection.RTCConfiguration(iceServers)
         //创建PeerConnection
-        peerConnection = peerConnectionFactory?.createPeerConnection(rtcConfiguration, createPeerConnectionObserver())
+        peerConnection = peerConnectionFactory?.createPeerConnection(rtcConfiguration,
+            createPeerConnectionObserver()
+        )
     }
 
     private fun createPeerConnectionObserver(): MyPeerConnectionObserver {
@@ -96,7 +98,7 @@ object WebRtcUtils {
         val mediaConstraints = MediaConstraints()
         mediaConstraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
         mediaConstraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"))
-        this.onCreateOfferSuccess = onCreateOfferSuccess
+        WebRtcHelper.onCreateOfferSuccess = onCreateOfferSuccess
         peerConnection?.createOffer(sdpObserver, mediaConstraints)
     }
 
@@ -104,7 +106,7 @@ object WebRtcUtils {
         val mediaConstraints = MediaConstraints()
         mediaConstraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
         mediaConstraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"))
-        this.onCreateAnswerSuccess = onCreateAnswerSuccess
+        WebRtcHelper.onCreateAnswerSuccess = onCreateAnswerSuccess
         peerConnection?.createAnswer(sdpObserver, mediaConstraints)
     }
 
@@ -136,8 +138,14 @@ object WebRtcUtils {
     }
 
     private fun initVideoAudio() {
-        initSurfaceView(localVideoView, true)
-        initSurfaceView(remoteVideoView, false)
+        initSurfaceView(
+            localVideoView,
+            true
+        )
+        initSurfaceView(
+            remoteVideoView,
+            false
+        )
         initVideoCapture()
         initAudioCapture()
     }
@@ -162,11 +170,16 @@ object WebRtcUtils {
         //噪音处理
         audioConstraints.mandatory.add(MediaConstraints.KeyValuePair("googNoiseSuppression", "true"))
         val audioSource = peerConnectionFactory?.createAudioSource(audioConstraints)
-        val audioTrack = peerConnectionFactory?.createAudioTrack(AUDIO_TRACK, audioSource)
-        val localMediaStream = peerConnectionFactory?.createLocalMediaStream(LOCAL_AUDIO_STREAM)
+        val audioTrack = peerConnectionFactory?.createAudioTrack(
+            AUDIO_TRACK, audioSource)
+        val localMediaStream = peerConnectionFactory?.createLocalMediaStream(
+            LOCAL_AUDIO_STREAM
+        )
         localMediaStream?.addTrack(audioTrack)
         audioTrack?.setVolume(VOLUME)
-        peerConnection?.addTrack(audioTrack, streamList)
+        peerConnection?.addTrack(audioTrack,
+            streamList
+        )
         peerConnection?.addStream(localMediaStream)
 
     }
@@ -175,13 +188,23 @@ object WebRtcUtils {
         val videoSource = peerConnectionFactory?.createVideoSource(true)
         val surfaceTextureHelper = SurfaceTextureHelper.create(Thread.currentThread().name, eglBase.eglBaseContext)
         val videoCapturer = createVideoCapturer()
-        videoCapturer?.initialize(surfaceTextureHelper, context, videoSource?.capturerObserver)
-        videoCapturer?.startCapture(VIDEO_WIDTH, VIDEO_HEIGHT, VIDEO_FPS)
-        val videoTrack = peerConnectionFactory?.createVideoTrack(VIDEO_TRACK, videoSource)
+        videoCapturer?.initialize(surfaceTextureHelper,
+            context, videoSource?.capturerObserver)
+        videoCapturer?.startCapture(
+            VIDEO_WIDTH,
+            VIDEO_HEIGHT,
+            VIDEO_FPS
+        )
+        val videoTrack = peerConnectionFactory?.createVideoTrack(
+            VIDEO_TRACK, videoSource)
         videoTrack?.addSink(localVideoView)
-        val videoStream = peerConnectionFactory?.createLocalMediaStream(LOCAL_VIDEO_STREAM)
+        val videoStream = peerConnectionFactory?.createLocalMediaStream(
+            LOCAL_VIDEO_STREAM
+        )
         videoStream?.addTrack(videoTrack)
-        peerConnection?.addTrack(videoTrack, streamList)
+        peerConnection?.addTrack(videoTrack,
+            streamList
+        )
         peerConnection?.addStream(videoStream)
     }
 
